@@ -3,6 +3,18 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+import axios from "axios";
+
+// axios.get('https://api.github.com/users/roberly2120')
+//   .then(result => {
+//     const ryanTheUser = userCard({result});
+//     console.log(result);
+    
+//   })
+//   .catch(err => {
+//     console.error(err);
+//   })
+//   .finally( () => console.log('you did it, you LEGEND!'))
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +40,94 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [ 
+  "tetondan", 
+  "dustinmyers", 
+  "justsml", 
+  "luishrd", 
+  "bigknell"
+];
+
+
+function userCardMaker (userObj) {
+  const card = document.createElement('div');
+  const userImg = document.createElement('img');
+  const infoCard = document.createElement('div');
+  const nameTitle = document.createElement('h3');
+  const userName = document.createElement('p');
+  const userLocation = document.createElement('p');
+  const profile = document.createElement('p');
+  const pageAddress = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+
+  card.appendChild(userImg);
+  card.appendChild(infoCard);
+  infoCard.appendChild(nameTitle);
+  infoCard.appendChild(userName);
+  infoCard.appendChild(userLocation);
+  infoCard.appendChild(profile);
+  // infoCard.appendChild(profile.appendChild(pageAddress));
+  profile.appendChild(pageAddress);
+  infoCard.appendChild(followers);
+  infoCard.appendChild(following);
+  infoCard.appendChild(bio);
+  
+  
+
+
+  card.className = 'card'
+  userImg.src = userObj.avatar_url;
+  userImg.alt = 'github profile user';
+  infoCard.className = 'card-info';
+  nameTitle.className = 'name';
+  nameTitle.textContent = userObj.name
+  userName.className = "username";
+  userName.textContent = userObj.login;
+  userLocation.textContent = `Location: ${userObj.location}`;
+  profile.textContent = "Profile:";
+  pageAddress.href = userObj.html_url;
+  pageAddress.textContent = "Profile Link";
+  followers.textContent = `Followers: ${userObj.followers}`;
+  following.textContent = `Following: ${userObj.following}`;
+  bio.textContent = `Bio: ${userObj.bio}`
+
+  console.log('Card:', card);
+  console.log(pageAddress);
+  return card;
+
+}
+
+const entryPoint = document.querySelector('.cards');
+
+followersArray.forEach(follower => {
+  axios.get(`https://api.github.com/users/${follower}`)
+  .then(result => {
+    const userCard = userCardMaker(result.data);
+    entryPoint.appendChild(userCard);
+  })
+  .catch(err => {
+    console.error(err);
+  })
+})
+
+
+
+
+
+
+axios.get('https://api.github.com/users/roberly2120')
+  .then(result => {
+    console.log(result);
+    const userCard = userCardMaker(result.data);
+    entryPoint.appendChild(userCard);
+    
+  })
+  .catch(err => {
+    console.error(err);
+  })
+  .finally( () => console.log('you did it, you LEGEND!'))
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
